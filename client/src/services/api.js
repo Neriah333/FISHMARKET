@@ -7,7 +7,7 @@ const API = axios.create({
 // interceptor-attaches jws automatically
 API.interceptors.request.use(cfg => {
   const token = localStorage.getItem("token");
-  if (token) cfg.s.Authorization = `Bearer ${token}`;
+  if (token) cfg.headers.Authorization = `Bearer ${token}`;
   return cfg;
 });
 
