@@ -3,27 +3,25 @@ import {
   NavigationMenuList,
   NavigationMenuItem,
 } from "@/components/ui/navigation-menu";
-import { Input } from "./ui/input";
-import ThemeToggle from "./ThemeToggle";
-import { Avatar } from "./ui/avatar";
+import { Button } from "@/components/ui/button";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
 
-
-export default function Layout({ setFilter }) {
+export default function Layout() {
 
 
 
   return (
-    <div className="flex justify-center items-center py-4 shadow-none border-none">
-        <NavigationMenu className="mt-5 mb-5">
+    <div className="flex justify-center items-center py-4 shadow-none border-2">
+        <NavigationMenu className="">
         <NavigationMenuList className="flex justify-between items-center w-full">
-          <div className="flex justify-center items-center py-4 shadow-none border-none">
-            <NavigationMenu className="mt-5 mb-5">
+          <div className="flex justify-center items-center shadow-none border-none">
+            <NavigationMenu className="">
               <NavigationMenuList className="flex justify-between items-center w-full">
-                <div className="flex gap-6 text-sm">
+                <div className="flex gap-10 text-sm">
                   <NavigationMenuItem>
                     <a
                       href="#"
-                      className="text-3xl font-bold text-white hover:text-blue-600"
+                      className="text-2xl font-bold text-blue hover:text-blue-600"
                     >
                       Home
                     </a>
@@ -31,7 +29,7 @@ export default function Layout({ setFilter }) {
                   <NavigationMenuItem>
                     <a
                       href="#"
-                      className="text-3xl font-bold text-white hover:text-blue-600"
+                      className="text-2xl font-bold text-blue hover:text-blue-600"
                     >
                       About
                     </a>
@@ -39,7 +37,7 @@ export default function Layout({ setFilter }) {
                   <NavigationMenuItem>
                     <a
                       href="#"
-                      className="text-3xl font-bold text-white hover:text-blue-600"
+                      className="text-2xl font-bold text-blue hover:text-blue-600"
                     >
                       Contact
                     </a>
@@ -49,12 +47,12 @@ export default function Layout({ setFilter }) {
             </NavigationMenu>
           </div>
 
-          <Input placeholder="Search sales..." className="w-64 text-white" 
-          onChange={(e) => setFilter?.(e.target.value)} />
-          <ThemeToggle />
         </NavigationMenuList>
       </NavigationMenu>
-      <Avatar className="ml-6" />
+
+      <Button variant="ghost" size="icon" className="ml-150">
+        <UserCircleIcon className="h-16 w-16" />
+      </Button>
     </div>
   );
 }
