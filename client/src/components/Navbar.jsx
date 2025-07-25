@@ -5,6 +5,8 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { UserCircleIcon } from "@heroicons/react/24/solid";
+import { Link } from "react-router-dom";
+
 
 export default function Layout() {
 
@@ -19,28 +21,31 @@ export default function Layout() {
               <NavigationMenuList className="flex justify-between items-center w-full">
                 <div className="flex gap-10 text-sm">
                   <NavigationMenuItem>
-                    <a
-                      href="#"
-                      className="text-2xl font-bold text-blue hover:text-blue-600"
+                    <Link
+                        to="/login"
+                        className="text-2xl font-bold text-blue hover:text-blue-600"
                     >
-                      Home
-                    </a>
+                        Home
+                    </Link>
+
                   </NavigationMenuItem>
                   <NavigationMenuItem>
-                    <a
-                      href="#"
+                    <Link
+                      to="/about"
                       className="text-2xl font-bold text-blue hover:text-blue-600"
                     >
                       About
-                    </a>
+                    </Link>
+
                   </NavigationMenuItem>
                   <NavigationMenuItem>
-                    <a
-                      href="#"
+                    <Link
+                      to="/contact"
                       className="text-2xl font-bold text-blue hover:text-blue-600"
                     >
                       Contact
-                    </a>
+                    </Link>
+
                   </NavigationMenuItem>
                 </div>
               </NavigationMenuList>
