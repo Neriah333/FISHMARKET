@@ -35,27 +35,6 @@ try {
 }
 };
 
-// Login Endpoint Logiv
-// exports.login = async (req, res) => {
-//   try {
-//     const { email, password } = req.body;
-
-//   const user = await User.findOne({ email });
-//   if (!user) return res.status(401).json({ message: "User Not Found"});
-
-//   const match = await bcrypt.compare(password, user.password);
-//   if (!match) return res.status(401).json({ message: "Incorrect password"});
-
-//   const token = jwt.sign({ id: user._id, role: user.role}, process.env.JWT_SECRET, {
-//     expiresIn: '1h'
-//   });
-//   res.json({ token });
-//   } catch (error) {
-//     console.log("Login error:", error);
-//     res.status(500).json({ message: "Internal server error"})
-//   }
-// };
-
 exports.login = async (req, res) => {
   try {
     console.log("Login request body:", req.body); // 🟡 Step 1
