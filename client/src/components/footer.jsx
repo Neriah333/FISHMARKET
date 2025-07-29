@@ -1,6 +1,6 @@
 import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 
-export default function Footer() {
+export default function Footerbar() {
   return (
     <footer className="bg-gray-300 text-white py-6 w-full">
       <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
