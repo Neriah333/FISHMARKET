@@ -1,4 +1,4 @@
-const FishSale = require("../models/FishSale");
+const FishSale = require("../models/FIshSale");
 
 // POST /api/fish-sale
 exports.createSale = async (req, res) => {
