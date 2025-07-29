@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { FooterBar } from "../components/Footer";
+// import FooterBar from "../components/Footer";
 
 export default function AboutUs() {
   return (
@@ -65,7 +65,7 @@ export default function AboutUs() {
           </Card>
         </div>
       </div>
-      <FooterBar />
+      {/* <FooterBar /> */}
     </div>
   );
 }
