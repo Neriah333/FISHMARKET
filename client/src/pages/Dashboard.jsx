@@ -2,7 +2,7 @@ import { useState } from "react";
 import API from "../services/api";
 import Navbar from "../components/Navbar";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import Footer from "../components/Footer";
+import { FooterBar } from "../components/Footer";
 import Menu from "../components/Side";
 
 export default function Dashboard() {
@@ -77,7 +77,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <Footer />
+      <FooterBar />
     </div>
   );
 }
