@@ -1,7 +1,6 @@
 <!DOCTYPE html>
   <html>
     <head>
-      <title>Fish Market</title>
     </head>
     <body>
       <h1>FISH MARKET FOR COOPERATIVES</h1>
@@ -38,7 +37,7 @@
 └── .env            → Environment variables
 </p> 
       <h2>Here is a link to the deployed application</h2>
-      <a href="fishmarke.netlify.app">Click Me</a>
+      fishmarke.netlify.app
       <h2>Demo</h2>
       <h2>Key Features</h2>
       <h3>Authentification</h3>
