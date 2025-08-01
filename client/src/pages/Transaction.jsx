@@ -1,96 +1,83 @@
 import { useState } from "react";
-import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent } from "@/components/ui/card";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
 import { format } from "date-fns";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-} from "recharts";
 
 const mockTransactions = [
-  { id: 1, description: "Sold Tilapia", date: "2025-07-26", amount: 1200 },
-  { id: 2, description: "Sold Catfish", date: "2025-07-26", amount: 750 },
-  { id: 3, description: "Sold Nile Perch", date: "2025-07-25", amount: 3000 },
-  { id: 4, description: "Bought Ice", date: "2025-07-24", amount: -500 },
+  { id: 1, transactionId: "T-001", transactionDate: new Date("2025-07-02"), fisherman: "Otieno Odhiambo", saleId: "S-001", paymentAmount: 36000 },
+  { id: 2, transactionId: "T-002", transactionDate: new Date("2025-07-05"), fisherman: "Otieno Odhiambo", saleId: "S-002", paymentAmount: 28000 },
+  { id: 3, transactionId: "T-003", transactionDate: new Date("2025-07-07"), fisherman: "Otieno Odhiambo", saleId: "S-003", paymentAmount: 48000 },
+  { id: 4, transactionId: "T-004", transactionDate: new Date("2025-07-10"), fisherman: "Otieno Odhiambo", saleId: "S-004", paymentAmount: 27900 },
+  { id: 5, transactionId: "T-005", transactionDate: new Date("2025-07-12"), fisherman: "Otieno Odhiambo", saleId: "S-005", paymentAmount: 39000 },
+  { id: 6, transactionId: "T-006", transactionDate: new Date("2025-07-15"), fisherman: "Otieno Odhiambo", saleId: "S-006", paymentAmount: 31900 },
 ];
 
 export default function Transaction() {
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const formatted = format(selectedDate, "yyyy-MM-dd");
-
-  const filtered = mockTransactions.filter(
-    (txn) => txn.date === formatted
-  );
-
-  const total = filtered.reduce((sum, txn) => sum + txn.amount, 0);
+  const [transactions] = useState(mockTransactions);
 
   return (
-    <div className="p-6 space-y-8 bg-gray-300">
-      <h1 className="text-3xl font-bold text-blue-600">Transactions</h1>
+    <div className="p-6 space-y-6">
+      <h1 className="text-2xl font-bold">Transactions</h1>
 
-      <div className="grid md:grid-cols-2 gap-8">
-        {/* Calendar Filter */}
-        <div>
-          <h2 className="text-xl font-semibold mb-2">Select a Date</h2>
-          <Calendar mode="single" selected={selectedDate} onSelect={setSelectedDate} />
-        </div>
+      {/* Table */}
+      <Card>
+        <CardContent className="overflow-x-auto p-4">
+          <table className="w-full border text-left">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="py-2 px-4 border">Transaction ID</th>
+                <th className="py-2 px-4 border">Date</th>
+                <th className="py-2 px-4 border">Fisherman</th>
+                <th className="py-2 px-4 border">Sale ID</th>
+                <th className="py-2 px-4 border">Payment Amount (KES)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {transactions.map((tx) => (
+                <tr key={tx.id} className="hover:bg-gray-50">
+                  <td className="py-2 px-4 border">{tx.transactionId}</td>
+                  <td className="py-2 px-4 border">{format(tx.transactionDate, "PPP")}</td>
+                  <td className="py-2 px-4 border">{tx.fisherman}</td>
+                  <td className="py-2 px-4 border">{tx.saleId}</td>
+                  <td className="py-2 px-4 border">{tx.paymentAmount.toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </CardContent>
+      </Card>
 
-        {/* Transaction List */}
-        <div>
-          <h2 className="text-xl font-semibold mb-2">Records for {formatted}</h2>
-          <ul className="space-y-2">
-            {filtered.length > 0 ? (
-              filtered.map((txn) => (
-                <li
-                  key={txn.id}
-                  className="border rounded-lg p-4 flex justify-between items-center"
-                >
-                  <span>{txn.description}</span>
-                  <span
-                    className={`font-semibold ${
-                      txn.amount < 0 ? "text-red-600" : "text-green-600"
-                    }`}
-                  >
-                    {txn.amount < 0 ? "-" : "+"} KES {Math.abs(txn.amount)}
-                  </span>
-                </li>
-              ))
-            ) : (
-              <p className="text-gray-500">No records found for this date.</p>
-            )}
-          </ul>
+      {/* Calendar */}
+      <Card>
+        <CardContent className="p-4">
+          <h2 className="text-xl font-semibold mb-4">Transaction Dates</h2>
+          <DayPicker
+            mode="multiple"
+            month={new Date("2025-07-01")}
+            selected={transactions.map((t) => t.transactionDate)}
+            modifiersClassNames={{
+              selected: "bg-purple-500 text-white rounded-full",
+            }}
+          />
+        </CardContent>
+      </Card>
 
-          {/* Total Amount */}
-          <div className="mt-4 p-4 rounded bg-gray-100 text-lg font-semibold">
-            Total:{" "}
-            <span className={total < 0 ? "text-red-600" : "text-green-600"}>
-              KES {total}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* Chart Section */}
-      <div className="mt-6">
-        <h2 className="text-xl font-semibold mb-4">Sales Chart</h2>
-        {filtered.length > 0 ? (
+      {/* Bar Chart */}
+      <Card>
+        <CardContent className="p-4">
+          <h2 className="text-xl font-semibold mb-4">Payment Amounts in July</h2>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={filtered}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="description" />
+            <BarChart data={transactions}>
+              <XAxis dataKey="transactionId" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="amount" fill="#3b82f6" />
+              <Bar dataKey="paymentAmount" fill="#a855f7" />
             </BarChart>
           </ResponsiveContainer>
-        ) : (
-          <p className="text-gray-500">No data available to display the chart.</p>
-        )}
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
