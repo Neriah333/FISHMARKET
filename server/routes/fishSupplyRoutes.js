@@ -1,11 +1,26 @@
 const express = require("express");
-const { createSupply, getAllSupplies, getMySupplies } = require("../controllers/fishSupplyController");
+const {
+  createSupply,
+  getAllSupplies,
+  getMySupplies,
+  updateSupply,
+  deleteSupply,
+} = require("../controllers/fishSupplyController");
+
 const { protect, authorize } = require("../middleware/auth");
 
 const router = express.Router();
 
-router.post("/", protect, authorize(["fisherman", "admin"]), createSupply);
+// Fisherman: view only their supplies
 router.get("/me", protect, getMySupplies);
-router.get("/all", protect, authorize(["admin"]), getAllSupplies);
+
+// Admin/Accountant: view all supplies
+router.get("/", protect, authorize(["accountant", "admin"]), getAllSupplies);
+
+// Admin/Accountant: create, update, delete
+router.post("/", protect, authorize(["accountant", "admin"]), createSupply);
+router.put("/:id", protect, authorize(["accountant", "admin"]), updateSupply);
+router.delete("/:id", protect, authorize(["accountant", "admin"]), deleteSupply);
 
 module.exports = router;
+

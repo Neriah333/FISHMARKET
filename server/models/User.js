@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
     trim: true,
   },
   contact: {
-    type: String,
+    type: Number,
     required: true,
   },
   email: {
@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["fisherman", "admin"],
+    enum: ["fisherman", "admin", "agent"],
     required: true,
   },
 }, { timestamps: true });
