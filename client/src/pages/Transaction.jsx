@@ -29,7 +29,7 @@ export default function Transaction() {
   const total = filtered.reduce((sum, txn) => sum + txn.amount, 0);
 
   return (
-    <div className="p-6 space-y-8">
+    <div className="p-6 space-y-8 bg-gray-300">
       <h1 className="text-3xl font-bold text-blue-600">Transactions</h1>
 
       <div className="grid md:grid-cols-2 gap-8">

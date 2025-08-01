@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-const initialFishermen = [
+const defaultFishermen = [
   { id: 1, name: "Otieno Odhiambo", address: "Homa Bay", contact: "0712345678" },
   { id: 2, name: "Wanjiku Njeri", address: "Kisumu", contact: "0723456789" },
   { id: 3, name: "Kamau Mwangi", address: "Naivasha", contact: "0734567890" },
@@ -16,23 +17,51 @@ const initialFishermen = [
 ];
 
 export default function Fisherman() {
-  const [fishermen, setFishermen] = useState(initialFishermen);
+  const [fishermen, setFishermen] = useState([]);
+  const navigate = useNavigate();
+
+  // Load fishermen from localStorage when component mounts
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("fishermen"));
+    if (stored && stored.length > 0) {
+      setFishermen(stored);
+    } else {
+      localStorage.setItem("fishermen", JSON.stringify(defaultFishermen));
+      setFishermen(defaultFishermen);
+    }
+  }, []);
+
+  // Whenever fishermen changes, save to localStorage
+  useEffect(() => {
+    if (fishermen.length > 0) {
+      localStorage.setItem("fishermen", JSON.stringify(fishermen));
+    }
+  }, [fishermen]);
 
   const handleUpdate = (id) => {
-    alert(`Update fisherman with ID ${id}`);
+    navigate(`/admin/fishermen/update/${id}`);
   };
 
   const handleDelete = (id) => {
-    const confirm = window.confirm("Are you sure you want to delete this fisherman?");
-    if (confirm) {
-      setFishermen(fishermen.filter((f) => f.id !== id));
+    if (window.confirm("Are you sure you want to delete this fisherman?")) {
+      const updatedList = fishermen.filter((f) => f.id !== id);
+      setFishermen(updatedList);
     }
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Fishermen List</h1>
-      <Card>
+    <div className="p-6 w-full bg-gray-300">
+      <div className="flex justify-between items-center mb-6 w-full">
+        <h1 className="text-2xl font-bold">Fishermen List</h1>
+        <Button
+          onClick={() => navigate("/admin/fishermen/add")}
+          className="bg-blue-600 text-white hover:bg-blue-700"
+        >
+          + Add Fisherman
+        </Button>
+      </div>
+
+      <Card className="w-full">
         <CardContent className="overflow-x-auto p-4">
           <table className="w-full text-sm text-left border border-gray-200">
             <thead className="bg-gray-100 text-gray-700">
