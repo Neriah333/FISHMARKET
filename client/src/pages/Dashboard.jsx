@@ -3,6 +3,7 @@ import API from "../services/api"; // Axios instance
 import Navbar from "../components/Navbar";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import Menu from "../components/Side";
+import Footer from "../components/Footer";
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -99,6 +100,7 @@ export default function Dashboard() {
               <p className="text-gray-600">Coming soon: Cooperative blog & market insights.</p>
             </CardContent>
           </Card>
+          <Footer />
         </main>
       </div>
     </div>
