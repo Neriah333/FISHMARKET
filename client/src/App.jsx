@@ -11,7 +11,7 @@ import SalesPage from "./pages/Sales";
 import TransactionPage from "./pages/Transaction";
 import AdminDashboard from "./pages/AdminDashboard";
 import Fisherman from "./pages/Fisherman";
-import AddFisherman from "./pages/AddFisherman"; // ✅ Fixed capitalization to match import convention
+import AddFisherman from "./pages/addFisherman"; // ✅ Fixed capitalization to match import convention
 import UpdateFisherman from "./pages/UpdateFisherman"; // ✅ Added Update page
 import SalesAdmin from "./pages/SalesAdmin";
 import AddSale from "./pages/AddSales";
