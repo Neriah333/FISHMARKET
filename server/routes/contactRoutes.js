@@ -14,7 +14,7 @@ router.post("/", protect, authorize(["fisherman"]), createMessage);
 router.get("/me", protect, authorize(["fisherman"]), getMyMessages);
 
 // Admin & Accountant: view all messages
-router.get("/", protect, authorize(["admin", "accountant"]), getAllMessages);
+router.get("/", protect, authorize(["admin", "agent"]), getAllMessages);
 
 // Admin can delete any; Fisherman can delete only their own
 router.delete("/:id", protect, authorize(["fisherman", "admin"]), deleteMessage);

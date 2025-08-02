@@ -9,15 +9,16 @@ import API from "../services/api";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState(""); // New: role selection
+  const [role, setRole] = useState(""); // Dropdown role
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    if (!email || !password || !role) return alert("All fields required");
+    if (!email || !password || !role) return alert("All fields are required");
 
     setLoading(true);
     try {
+      // Send email, password, and selected role to backend
       const res = await API.post("/auth/login", { email, password, role });
 
       if (!res.data?.token) {
@@ -25,14 +26,19 @@ export default function Login() {
         return;
       }
 
+      // Save real backend token & role
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", role);
+      localStorage.setItem("role", res.data.role);
 
-      // Redirect based on role
-      if (role === "fisherman") {
+      // Redirect based on backend role
+      if (res.data.role === "fisherman") {
         navigate("/dashboard");
-      } else if (role === "admin") {
+      } else if (res.data.role === "admin") {
         navigate("/admin");
+      } else if (res.data.role === "agent") {
+        navigate("/dashboard"); // or another page if agent has one
+      } else {
+        navigate("/unauthorized");
       }
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
@@ -67,6 +73,7 @@ export default function Login() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="fisherman">Fisherman</SelectItem>
+              <SelectItem value="agent">Agent</SelectItem>
               <SelectItem value="admin">Cooperative Admin</SelectItem>
             </SelectContent>
           </Select>

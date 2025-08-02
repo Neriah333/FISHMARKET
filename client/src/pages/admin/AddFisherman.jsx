@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import API from "../services/api"; // ✅ your axios instance with token
+import API from "../../services/api"; // ✅ your axios instance with token
 
 export default function AddFisherman() {
   const [name, setName] = useState("");

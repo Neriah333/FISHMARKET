@@ -1,26 +1,26 @@
 const express = require("express");
 const {
   createSale,
-  updateSale,
-  deleteSale,
   getAllSales,
   getMySales,
+  updateSale,
+  deleteSale,
 } = require("../controllers/fishSaleController");
 
 const { protect, authorize } = require("../middleware/auth");
 
 const router = express.Router();
 
-// Only agent and admin can create, update, delete
-router.post("/", protect, authorize(["accountant", "admin"]), createSale);
-router.put("/:id", protect, authorize(["accountant", "admin"]), updateSale);
-router.delete("/:id", protect, authorize(["accountant", "admin"]), deleteSale);
-
-// Admin and agent can view all sales
-router.get("/", protect, authorize(["accountant", "admin"]), getAllSales);
-
-// Fisherman sees only his sales
+// Fisherman: view only their own sales
 router.get("/me", protect, getMySales);
+
+// Admin/Accountant: view all sales
+router.get("/", protect, authorize(["agent", "admin"]), getAllSales);
+
+// Admin/Accountant: create, update, delete
+router.post("/", protect, authorize(["agent", "admin"]), createSale);
+router.put("/:id", protect, authorize(["agent", "admin"]), updateSale);
+router.delete("/:id", protect, authorize(["agent", "admin"]), deleteSale);
 
 module.exports = router;
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +17,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import API from "../services/api";
-import { Link } from "react-router-dom";
 
 export default function Signup() {
   const [fullName, setFullName] = useState("");
@@ -41,21 +40,26 @@ export default function Signup() {
     setLoading(true);
     try {
       const res = await API.post("/auth/signup", {
-        fullName,
+        fullname: fullName,      // ✅ backend expects `fullname` (lowercase n)
         email,
         contact,
         password,
+        confirmPassword,         // ✅ include confirmPassword
         role,
       });
 
+      // Save token and role in localStorage
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", role);
+      localStorage.setItem("role", res.data.role);
 
+      // Redirect based on role
       if (role === "fisherman") {
         navigate("/dashboard");
       } else if (role === "admin") {
         navigate("/admin-dashboard");
-      } 
+      } else {
+        navigate("/"); // fallback
+      }
     } catch (err) {
       alert(err.response?.data?.message || "Signup failed");
     } finally {
@@ -69,6 +73,7 @@ export default function Signup() {
         <CardHeader>
           <CardTitle className="text-center text-2xl font-bold">Sign Up</CardTitle>
         </CardHeader>
+
         <CardContent className="space-y-4">
           <Input
             type="text"
@@ -100,6 +105,7 @@ export default function Signup() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
+
           <Select onValueChange={(value) => setRole(value)}>
             <SelectTrigger className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
               <SelectValue placeholder="Select Role" />
@@ -110,6 +116,7 @@ export default function Signup() {
             </SelectContent>
           </Select>
         </CardContent>
+
         <CardFooter>
           <Button onClick={handleSignup} className="w-full" disabled={loading}>
             {loading ? "Signing up..." : "Sign Up"}

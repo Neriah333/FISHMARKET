@@ -18,9 +18,9 @@ router.get("/me", protect, getMySupplies);
 router.get("/", protect, authorize(["accountant", "admin"]), getAllSupplies);
 
 // Admin/Accountant: create, update, delete
-router.post("/", protect, authorize(["accountant", "admin"]), createSupply);
-router.put("/:id", protect, authorize(["accountant", "admin"]), updateSupply);
-router.delete("/:id", protect, authorize(["accountant", "admin"]), deleteSupply);
+router.post("/", protect, authorize(["agent", "admin"]), createSupply);
+router.put("/:id", protect, authorize(["agent", "admin"]), updateSupply);
+router.delete("/:id", protect, authorize(["agent", "admin"]), deleteSupply);
 
 module.exports = router;
 

@@ -1,21 +1,17 @@
-const FishSale = require("../models/FIshSale");
-const FishSupply = require("../models/FishSupply");
+const FishSale = require("../models/FishSale");
 
-// ================= CREATE SALE (Admin/Accountant) =================
+
+// ================= CREATE SALE =================
 exports.createSale = async (req, res) => {
   try {
     const { fishSupply, saleDate, saleAmount } = req.body;
 
-    // Validate supply exists
-    const supply = await FishSupply.findById(fishSupply);
-    if (!supply) {
-      return res.status(404).json({ message: "Fish supply not found" });
-    }
+    const sale = await FishSale.create({ fishSupply, saleDate, saleAmount });
 
-    const sale = await FishSale.create({
-      fishSupply,
-      saleDate,
-      saleAmount,
+    // ✅ Populate before sending back
+    await sale.populate({
+      path: "fishSupply",
+      populate: { path: "fisherman", model: "Fisherman" },
     });
 
     res.status(201).json(sale);
@@ -25,13 +21,14 @@ exports.createSale = async (req, res) => {
   }
 };
 
-// ================= GET ALL SALES (Admin/Accountant) =================
+
+// Get All Sales (Admin/Accountant)
 exports.getAllSales = async (req, res) => {
   try {
     const sales = await FishSale.find()
       .populate({
         path: "fishSupply",
-        populate: { path: "fisherman" },
+        populate: { path: "fisherman" } // ✅ deep populate
       })
       .sort({ saleDate: -1 });
 
@@ -42,36 +39,38 @@ exports.getAllSales = async (req, res) => {
   }
 };
 
+
 // ================= GET MY SALES (Fisherman) =================
 exports.getMySales = async (req, res) => {
   try {
-    // Find supplies belonging to the logged-in fisherman
-    const supplies = await FishSupply.find({ fisherman: req.user.id });
-    const supplyIds = supplies.map((supply) => supply._id);
-
-    // Find sales linked to those supplies
-    const sales = await FishSale.find({ fishSupply: { $in: supplyIds } })
+    const sales = await FishSale.find()
       .populate({
         path: "fishSupply",
-        populate: { path: "fisherman" },
+        populate: { path: "fisherman", model: "Fisherman" },
       })
       .sort({ saleDate: -1 });
 
-    res.json(sales);
+    // ✅ Filter by current fisherman
+    const mySales = sales.filter(
+      (sale) => sale.fishSupply?.fisherman?._id.toString() === req.user.id
+    );
+
+    res.json(mySales);
   } catch (error) {
     console.error("Error fetching my sales:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
 
-// ================= UPDATE SALE (Admin/Accountant) =================
+
+// ================= UPDATE SALE =================
 exports.updateSale = async (req, res) => {
   try {
     const sale = await FishSale.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
     }).populate({
       path: "fishSupply",
-      populate: { path: "fisherman" },
+      populate: { path: "fisherman", model: "Fisherman" },
     });
 
     if (!sale) return res.status(404).json({ message: "Sale not found" });
@@ -83,7 +82,8 @@ exports.updateSale = async (req, res) => {
   }
 };
 
-// ================= DELETE SALE (Admin/Accountant) =================
+
+// ================= DELETE SALE =================
 exports.deleteSale = async (req, res) => {
   try {
     const sale = await FishSale.findByIdAndDelete(req.params.id);

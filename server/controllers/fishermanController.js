@@ -22,6 +22,19 @@ exports.getAllFishermen = async (req, res) => {
   }
 };
 
+
+// ✅ Get single fisherman by ID
+exports.getFishermanById = async (req, res) => {
+  try {
+    const fisherman = await Fisherman.findById(req.params.id);
+    if (!fisherman) return res.status(404).json({ message: "Fisherman not found" });
+    res.json(fisherman);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 // ========== GET MY FISHERMAN PROFILE (Fisherman) ==========
 exports.getMyFisherman = async (req, res) => {
   try {
