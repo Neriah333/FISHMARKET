@@ -7,9 +7,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import ContactUs from "./pages/Contact";
 import AboutUs from "./pages/About";
-import SupplyPage from "./pages/Supply";
-import SalesPage from "./pages/Sales";
-import TransactionPage from "./pages/Transaction";
+
 import CommunityBlog from "./pages/Community";
 import Unauthorized from "./pages/Unauthorized";
 
@@ -39,6 +37,11 @@ import TransactionsAdmin from "./pages/admin/TransactionList";
 import AddTransaction from "./pages/admin/AddTransaction";
 import EditTransaction from "./pages/admin/EditTransaction";
 
+// 
+import SupplyMe from "./pages/fisherman/Supply";
+import Sales from "./pages/fisherman/Sales";
+import Transaction from "./pages/fisherman/Transaction";
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -50,9 +53,9 @@ export default function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/about" element={<AboutUs />} />
-        <Route path="/supply" element={<SupplyPage />} />
-        <Route path="/sales" element={<SalesPage />} />
-        <Route path="/transactions" element={<TransactionPage />} />
+        <Route path="/supplies/me" element={<SupplyMe />} />
+        <Route path="/sales/me" element={<Sales />} />
+        <Route path="/transactions/me" element={<Transaction />} />
         <Route path="/community" element={<CommunityBlog />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 

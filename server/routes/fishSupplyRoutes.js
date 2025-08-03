@@ -15,14 +15,15 @@ const router = express.Router();
 // Fisherman: view only their supplies
 router.get("/me", protect, getMySupplies);
 
-// Admin/Accountant: view all supplies
+// Admin/Agent: view all supplies
 router.get("/", protect, authorize(["agent", "admin"]), getAllSupplies);
 
-// Admin/Accountant: create, update, delete
+// Admin/Agent: single supply
+router.get("/:id", protect, authorize(["agent", "admin"]), getSupplyById);
+
+// Admin/Agent: create, update, delete
 router.post("/", protect, authorize(["agent", "admin"]), createSupply);
 router.put("/:id", protect, authorize(["agent", "admin"]), updateSupply);
 router.delete("/:id", protect, authorize(["agent", "admin"]), deleteSupply);
-router.get("/:id", protect, authorize(["agent", "admin"]), getSupplyById);
 
 module.exports = router;
-

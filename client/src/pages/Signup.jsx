@@ -32,35 +32,21 @@ export default function Signup() {
     if (!fullName || !email || !contact || !password || !confirmPassword || !role) {
       return alert("All fields are required");
     }
-
-    if (password !== confirmPassword) {
-      return alert("Passwords do not match");
-    }
+    if (password !== confirmPassword) return alert("Passwords do not match");
 
     setLoading(true);
     try {
-      const res = await API.post("/auth/signup", {
-        fullname: fullName,      // ✅ backend expects `fullname` (lowercase n)
+      await API.post("/auth/signup", {
+        fullname: fullName,
         email,
         contact,
         password,
-        confirmPassword,         // ✅ include confirmPassword
+        confirmPassword,
         role,
       });
 
-      // Save token and role in localStorage
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.role);
-
-      // Redirect based on role
-      if (role === "fisherman") {
-        navigate("/dashboard");
-      } else if (role === "agent" || role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/"); // fallback
-      }
-      
+      alert("Signup successful! Please log in.");
+      navigate("/login"); // ✅ Redirect to login only
     } catch (err) {
       alert(err.response?.data?.message || "Signup failed");
     } finally {
@@ -76,39 +62,14 @@ export default function Signup() {
         </CardHeader>
 
         <CardContent className="space-y-4">
-          <Input
-            type="text"
-            placeholder="Full Name"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-          />
-          <Input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Input
-            type="text"
-            placeholder="Contact Information"
-            value={contact}
-            onChange={(e) => setContact(e.target.value)}
-          />
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <Input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
+          <Input placeholder="Full Name" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+          <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input placeholder="Contact Information" value={contact} onChange={(e) => setContact(e.target.value)} />
+          <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <Input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
 
           <Select onValueChange={(value) => setRole(value)}>
-            <SelectTrigger className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
+            <SelectTrigger className="w-full h-10 rounded-md border px-3 py-2 text-sm shadow-sm">
               <SelectValue placeholder="Select Role" />
             </SelectTrigger>
             <SelectContent>

@@ -9,48 +9,51 @@ import API from "../services/api";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState(""); // Dropdown role
+  const [role, setRole] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    if (!email || !password || !role) return alert("All fields are required");
+  if (!email || !password || !role) {
+    alert("All fields are required");
+    return;
+  }
 
-    setLoading(true);
-    try {
-      // Send login request to backend
-      const res = await API.post("/auth/login", { email, password, role });
+  setLoading(true);
+  try {
+    const res = await API.post("/auth/login", { 
+      email, 
+      password, 
+      role: role.toLowerCase() 
+    });
 
-      if (!res.data?.token) {
-        alert("Login failed: No token received");
-        return;
-      }
-
-      // ✅ Normalize and store role
-      const normalizedRole = role.toLowerCase();
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", normalizedRole);
-
-      // ✅ Store user for dashboard filtering
-      if (res.data.user) {
-        localStorage.setItem("user", JSON.stringify(res.data.user));
-      } else {
-        // fallback for fisherman if backend didn't send user
-        localStorage.setItem("user", JSON.stringify({ name: "Fisherman" }));
-      }
-
-      // ✅ Navigate based on selected role
-      if (normalizedRole === "fisherman") navigate("/dashboard");
-      else if (normalizedRole === "admin") navigate("/admin");
-      else if (normalizedRole === "agent") navigate("/admin");
-      else navigate("/unauthorized");
-
-    } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
-    } finally {
-      setLoading(false);
+    if (!res.data?.token) {
+      alert("Login failed: Missing token");
+      return;
     }
-  };
+
+    // ✅ Directly use backend data
+    const userData = {
+      _id: res.data._id,
+      fullName: res.data.fullName,
+      email: res.data.email,
+      contact: res.data.contact,
+      role: res.data.role.toLowerCase(),
+    };
+
+    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("user", JSON.stringify(userData));
+
+    if (userData.role === "fisherman") navigate("/dashboard");
+    else navigate("/admin");
+
+  } catch (err) {
+    alert(err.response?.data?.message || "Login failed");
+  } finally {
+    setLoading(false);
+  }
+ };
+
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-300 dark:bg-gray-900 px-4">
@@ -59,21 +62,11 @@ export default function Login() {
           <CardTitle className="text-center text-2xl font-bold">Log In</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
 
           <Select onValueChange={(value) => setRole(value)}>
-            <SelectTrigger className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm">
+            <SelectTrigger className="w-full h-10 rounded-md border px-3 py-2 text-sm shadow-sm">
               <SelectValue placeholder="Select Role" />
             </SelectTrigger>
             <SelectContent>
@@ -84,7 +77,7 @@ export default function Login() {
           </Select>
         </CardContent>
 
-        <CardFooter className="flex justify-between">
+        <CardFooter>
           <Button onClick={handleLogin} disabled={loading} className="w-full">
             {loading ? "Logging in..." : "Log In"}
           </Button>

@@ -23,10 +23,10 @@ router.get("/", async (req, res) => {
 });
 
 // Fisherman: view only their own profile
-router.get("/me", protect, authorize(["fisherman", "agent", "admin"]), getMyFisherman);
+router.get("/me", protect, getMyFisherman);
 
 // Admin & Accountant: view all fishermen
-router.get("/all", protect, authorize(["agent", "admin"]), getAllFishermen);
+router.get("/all", protect, authorize(["fisherman", "agent", "admin"]), getAllFishermen);
 
 // ✅ Admin only: view single fisherman by ID
 router.get("/:id", protect, authorize(["admin"]), getFishermanById);
