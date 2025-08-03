@@ -12,6 +12,16 @@ const { protect, authorize } = require("../middleware/auth");
 
 const router = express.Router();
 
+router.get("/", async (req, res) => {
+  try {
+    const fishermen = await require("../models/Fisherman").find();
+    res.json(fishermen);
+  } catch (err) {
+    console.error("Error fetching fishermen:", err);
+    res.status(500).json({ message: "Failed to fetch fishermen" });
+  }
+});
+
 // Fisherman: view only their own profile
 router.get("/me", protect, authorize(["fisherman", "agent", "admin"]), getMyFisherman);
 

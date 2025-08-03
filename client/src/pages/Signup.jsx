@@ -55,6 +55,8 @@ export default function Signup() {
       // Redirect based on role
       if (role === "fisherman") {
         navigate("/dashboard");
+      } else if (role === "agent") {
+        navigate("/admin-dashboard");
       } else if (role === "admin") {
         navigate("/admin-dashboard");
       } else {
@@ -112,6 +114,7 @@ export default function Signup() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="fisherman">Fisherman</SelectItem>
+              <SelectItem value="agent">Agent</SelectItem>
               <SelectItem value="admin">Cooperative Admin</SelectItem>
             </SelectContent>
           </Select>

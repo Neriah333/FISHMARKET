@@ -19,6 +19,7 @@ router.get("/me", protect, getMySales);
 router.get("/:id", protect, authorize(["agent", "admin"]), getSaleById);
 
 
+
 // Admin/Accountant: view all sales
 router.get("/", protect, authorize(["agent", "admin"]), getAllSales);
 

@@ -17,62 +17,82 @@ export default function AdminDashboard() {
   const [activities, setActivities] = useState([]);
 
   useEffect(() => {
-  const fetchDashboardData = async () => {
-    try {
-      const [fishermenRes, suppliesRes, salesRes, transactionsRes] = await Promise.all([
-        API.get("/fishermen"),
-        API.get("/supplies"),
-        API.get("/sales"),
-        API.get("/transactions"),
-      ]);
+    const fetchDashboardData = async () => {
+      try {
+        const [fishermenRes, suppliesRes, salesRes, transactionsRes] = await Promise.all([
+          API.get("/fishermen"),
+          API.get("/supplies"),
+          API.get("/sales"),
+          API.get("/transactions"),
+        ]);
 
-      const fishermen = fishermenRes.data || [];
-      const supplies = suppliesRes.data || [];
-      const sales = salesRes.data || [];
-      const transactions = transactionsRes.data || [];
+        const fishermen = fishermenRes.data || [];
+        const supplies = suppliesRes.data || [];
+        const sales = salesRes.data || [];
+        const transactions = transactionsRes.data || [];
 
-      // ✅ calculate totals dynamically
-      const totalSupplyValue = supplies.reduce(
-        (sum, s) => sum + (s.quantity || 0) * (s.pricePerUnit || 0),
-        0
-      );
-      const totalSalesValue = sales.reduce((sum, s) => sum + (s.saleAmount || 0), 0);
-      const totalTransactionValue = transactions.reduce(
-        (sum, t) => sum + (t.paymentAmount || 0),
-        0
-      );
+        // ✅ Only show counts
+        setCounts({
+          fishermen: fishermen.length,
+          supply: supplies.length,
+          sales: sales.length,
+          transactions: transactions.length,
+        });
 
-      setCounts({
-        fishermen: fishermen.length,
-        supply: totalSupplyValue,
-        sales: totalSalesValue,
-        transactions: totalTransactionValue,
-      });
+        // ✅ Prepare top 3 performing fishermen by sales
+        const salesByFisherman = {};
+        sales.forEach((s) => {
+          const name = s.fishSupply?.fisherman?.name || "Unknown";
+          salesByFisherman[name] = (salesByFisherman[name] || 0) + s.saleAmount;
+        });
 
-    } catch (err) {
-      console.error("Dashboard fetch failed:", err);
-    }
-  };
+        const topPerformers = Object.entries(salesByFisherman)
+          .map(([name, sales]) => ({ name, sales }))
+          .sort((a, b) => b.sales - a.sales)
+          .slice(0, 3);
 
-  fetchDashboardData();
-}, []);
+        setPerformanceData(topPerformers);
 
-  // --- Dashboard Cards ---
+        // ✅ Set recent 3 activities
+        const recentActivities = [
+          ...supplies.map((s) => ({
+            name: s.fisherman?.name || "Unknown",
+            action: `Supplied ${s.quantity}Kg`,
+            time: new Date(s.catchDate || s.createdAt).toLocaleDateString(),
+          })),
+          ...sales.map((s) => ({
+            name: s.fishSupply?.fisherman?.name || "Unknown",
+            action: `Sold fish worth KES ${s.saleAmount}`,
+            time: new Date(s.saleDate).toLocaleDateString(),
+          })),
+          ...transactions.map((t) => ({
+            name: t.fisherman?.name || "Unknown",
+            action: `Transaction of KES ${t.paymentAmount}`,
+            time: new Date(t.transactionDate).toLocaleDateString(),
+          })),
+        ]
+          .sort((a, b) => new Date(b.time) - new Date(a.time))
+          .slice(0, 3);
+
+        setActivities(recentActivities);
+      } catch (err) {
+        console.error("Dashboard fetch failed:", err);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
   const dashboardCards = [
     { title: "Fishermen", value: counts.fishermen, link: "/admin/fishermen" },
-    { title: "Total Supply", value: `KES ${counts.supply.toLocaleString()}`, link: "/admin/supply" },
-    { title: "Total Sales", value: `KES ${counts.sales.toLocaleString()}`, link: "/admin/sales" },
-    {
-      title: "Total Transactions",
-      value: `KES ${counts.transactions.toLocaleString()}`,
-      link: "/admin/transactions",
-    },
+    { title: "Supplies", value: counts.supply, link: "/admin/supply" },
+    { title: "Sales", value: counts.sales, link: "/admin/sales" },
+    { title: "Transactions", value: counts.transactions, link: "/admin/transactions" },
   ];
 
   return (
     <div className="flex h-screen bg-gray-100">
       <Side />
-
       <main className="flex-1 p-6 overflow-auto">
         <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
         <p className="text-gray-500 mb-6">Overview of the cooperative's activities</p>
