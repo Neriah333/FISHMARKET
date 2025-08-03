@@ -2,6 +2,7 @@ const express = require("express");
 const {
   createSale,
   getAllSales,
+  getSaleById,
   getMySales,
   updateSale,
   deleteSale,
@@ -13,6 +14,10 @@ const router = express.Router();
 
 // Fisherman: view only their own sales
 router.get("/me", protect, getMySales);
+
+// Get a single sale by ID
+router.get("/:id", protect, authorize(["agent", "admin"]), getSaleById);
+
 
 // Admin/Accountant: view all sales
 router.get("/", protect, authorize(["agent", "admin"]), getAllSales);

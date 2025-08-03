@@ -62,6 +62,25 @@ exports.getMySales = async (req, res) => {
   }
 };
 
+// ================= GET SINGLE SALE =================
+exports.getSaleById = async (req, res) => {
+  try {
+    const sale = await FishSale.findById(req.params.id)
+      .populate({
+        path: "fishSupply",
+        populate: { path: "fisherman", model: "Fisherman" },
+      });
+
+    if (!sale) return res.status(404).json({ message: "Sale not found" });
+
+    res.json(sale);
+  } catch (error) {
+    console.error("Error fetching sale:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
 
 // ================= UPDATE SALE =================
 exports.updateSale = async (req, res) => {
