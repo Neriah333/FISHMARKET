@@ -4,8 +4,8 @@ const ContactMessage = require("../models/ContactMessage");
 exports.createMessage = async (req, res) => {
   try {
     const message = await ContactMessage.create({
-      fisherman: req.user.id,
-      subject: req.body.subject,
+      name: req.body.name,
+      email: req.body.email,
       message: req.body.message,
     });
     res.status(201).json(message);
@@ -14,6 +14,7 @@ exports.createMessage = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 // Admin & Accountant can view all messages
 exports.getAllMessages = async (req, res) => {

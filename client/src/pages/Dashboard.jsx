@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import API from "@/services/api";
 import Sidebar from "@/components/Side"; // Update path/name as needed
 import { Card, CardContent } from "@/components/ui/card";
+import Navigation from "@/components/Navbar";
 
 export default function FishermanDashboard() {
   const [counts, setCounts] = useState({
@@ -60,6 +61,7 @@ export default function FishermanDashboard() {
       <Sidebar />
 
       <main className="flex-1 p-6 overflow-auto">
+        <Navigation />
         <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
           Welcome, {username} 🎣
         </h1>

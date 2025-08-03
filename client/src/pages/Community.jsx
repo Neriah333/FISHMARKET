@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import Side from "@/components/SideAdmin";
 import { format } from "date-fns";
 
 const fishermen = [

@@ -10,7 +10,7 @@ const { protect, authorize } = require("../middleware/auth");
 const router = express.Router();
 
 // Fisherman: send and view their messages
-router.post("/", protect, authorize(["fisherman"]), createMessage);
+router.post("/", createMessage);
 router.get("/me", protect, authorize(["fisherman"]), getMyMessages);
 
 // Admin & Accountant: view all messages
