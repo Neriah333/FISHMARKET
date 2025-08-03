@@ -22,7 +22,7 @@ export default function EditFisherman() {
 
         setName(fisherman.name || "");
         setAddress(fisherman.address || "");
-        setContact(fisherman.contactInfo || "");
+        setContact(fisherman.contact || "");
         setLoading(false);
       } catch (err) {
         alert("Failed to load fisherman details");
@@ -39,7 +39,7 @@ export default function EditFisherman() {
       await API.put(`/fishermen/${id}`, {
         name,
         address,
-        contactInfo: contact, // ✅ match backend schema
+        contact: contact, // ✅ match backend schema
       });
       alert("Fisherman updated successfully!");
       navigate("/admin/fishermen");

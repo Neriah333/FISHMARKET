@@ -47,6 +47,19 @@ exports.getMySupplies = async (req, res) => {
   }
 };
 
+exports.getSupplyById = async (req, res) => {
+  try {
+    const supply = await FishSupply.findById(req.params.id).populate("fisherman");
+    if (!supply) {
+      return res.status(404).json({ message: "Supply not found" });
+    }
+    res.json(supply);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 // ================= UPDATE SUPPLY (Admin/Accountant) =================
 exports.updateSupply = async (req, res) => {
   try {

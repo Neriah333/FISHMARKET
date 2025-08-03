@@ -4,12 +4,35 @@ import API from "../../services/api";
 
 export default function TransactionList() {
   const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    API.get("/transactions")
-      .then((res) => setTransactions(res.data))
-      .catch(() => alert("Failed to load transactions"));
+    fetchTransactions();
   }, []);
+
+  const fetchTransactions = async () => {
+    try {
+      const res = await API.get("/transactions");
+      setTransactions(res.data);
+    } catch (err) {
+      console.error("Error fetching transactions:", err.response || err.message);
+      alert("Failed to load transactions");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this transaction?")) return;
+    try {
+      await API.delete(`/transactions/${id}`);
+      setTransactions((prev) => prev.filter((t) => t._id !== id));
+    } catch (err) {
+      alert("Failed to delete transaction");
+    }
+  };
+
+  if (loading) return <p className="text-center p-6">Loading transactions...</p>;
 
   return (
     <div className="p-6">
@@ -50,13 +73,8 @@ export default function TransactionList() {
                   Edit
                 </Link>
                 <button
-                  onClick={async () => {
-                    if (window.confirm("Are you sure?")) {
-                      await API.delete(`/transactions/${tx._id}`);
-                      setTransactions(transactions.filter((t) => t._id !== tx._id));
-                    }
-                  }}
-                  className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                  onClick={() => handleDelete(tx._id)}
+                  className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
                 >
                   Delete
                 </button>
@@ -65,6 +83,10 @@ export default function TransactionList() {
           ))}
         </tbody>
       </table>
+
+      {transactions.length === 0 && (
+        <p className="text-center text-gray-600 mt-4">No transactions available.</p>
+      )}
     </div>
   );
 }

@@ -2,6 +2,7 @@ const express = require("express");
 const {
   createSupply,
   getAllSupplies,
+  getSupplyById,
   getMySupplies,
   updateSupply,
   deleteSupply,
@@ -21,6 +22,7 @@ router.get("/", protect, authorize(["accountant", "admin"]), getAllSupplies);
 router.post("/", protect, authorize(["agent", "admin"]), createSupply);
 router.put("/:id", protect, authorize(["agent", "admin"]), updateSupply);
 router.delete("/:id", protect, authorize(["agent", "admin"]), deleteSupply);
+router.get("/:id", protect, authorize(["agent", "admin", "accountant"]), getSupplyById);
 
 module.exports = router;
 

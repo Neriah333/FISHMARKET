@@ -19,12 +19,18 @@ export default function Dashboard() {
   });
 
   useEffect(() => {
-    // Fetch user from localStorage
-    const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
 
-    if (!storedUser) {
+    if (!token || role !== "fisherman") {
       navigate("/login", { replace: true });
       return;
+    }
+
+    // Load user from localStorage
+    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+    if (!storedUser._id) {
+      console.warn("No user ID found, dashboard may show empty data.");
     }
 
     setUser(storedUser);
@@ -32,23 +38,23 @@ export default function Dashboard() {
   }, [navigate]);
 
   useEffect(() => {
-    if (!user) return; // ✅ wait until user exists
+    if (!user || !user._id) return; // Wait until user is ready
 
     const fetchStats = async () => {
       try {
-        // Example: fetch only this fisherman's supplies & sales
+        // Fetch supplies and sales
         const [suppliesRes, salesRes] = await Promise.all([
           API.get("/supplies"),
           API.get("/sales"),
         ]);
 
+        // Filter only this fisherman's data
         const mySupplies = suppliesRes.data.filter(
-          (s) => s.fisherman?._id === user._id || s.fisherman?.id === user.id
+          (s) => s.fisherman?._id === user._id
         );
 
         const mySales = salesRes.data.filter(
-          (s) => s.fishSupply?.fisherman?._id === user._id || 
-                 s.fishSupply?.fisherman?.id === user.id
+          (s) => s.fishSupply?.fisherman?._id === user._id
         );
 
         setStats({
@@ -56,12 +62,11 @@ export default function Dashboard() {
           avgMarketPrice:
             mySales.length > 0
               ? (
-                  mySales.reduce((sum, s) => sum + (s.saleAmount || 0), 0) /
-                  mySales.length
+                  mySales.reduce((sum, s) => sum + (s.saleAmount || 0), 0) / mySales.length
                 ).toFixed(2)
               : 0,
-          mostTradedSpecies: "Nile Perch", // You can calculate from data if available
-          peakTradingTime: "6:00 AM – 10:00 AM", // Mocked
+          mostTradedSpecies: "Nile Perch", // Example placeholder
+          peakTradingTime: "6:00 AM – 10:00 AM", // Example placeholder
         });
       } catch (err) {
         console.error("Error fetching fisherman stats:", err);

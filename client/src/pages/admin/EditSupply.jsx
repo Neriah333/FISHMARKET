@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import API from "../../services/api";
 
 export default function EditSupply() {
-  const { id } = useParams(); // supply ID from URL
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [fisherman, setFisherman] = useState("");
@@ -13,35 +13,34 @@ export default function EditSupply() {
   const [pricePerUnit, setPricePerUnit] = useState("");
   const [catchDate, setCatchDate] = useState("");
   const [fishermen, setFishermen] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch existing supply
+  // ✅ Fetch single supply + fishermen
   useEffect(() => {
-    const fetchSupply = async () => {
+    const fetchData = async () => {
       try {
-        const res = await API.get(`/supplies/${id}`);
-        const supply = res.data;
+        const [supplyRes, fishermenRes] = await Promise.all([
+          API.get(`/supplies/${id}`),
+          API.get("/fishermen/all"),
+        ]);
 
+        const supply = supplyRes.data;
         setFisherman(supply.fisherman?._id || "");
         setQuantity(supply.quantity || "");
         setPricePerUnit(supply.pricePerUnit || "");
         setCatchDate(supply.catchDate ? supply.catchDate.split("T")[0] : "");
+
+        setFishermen(fishermenRes.data || []);
       } catch (error) {
-        alert("Failed to load supply data");
+        alert("Failed to load supply details");
+        navigate("/admin/supply");
+      } finally {
+        setLoading(false);
       }
     };
 
-    const fetchFishermen = async () => {
-      try {
-        const res = await API.get("/fishermen/all");
-        setFishermen(res.data);
-      } catch {
-        alert("Failed to load fishermen");
-      }
-    };
-
-    fetchSupply();
-    fetchFishermen();
-  }, [id]);
+    fetchData();
+  }, [id, navigate]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -66,11 +65,13 @@ export default function EditSupply() {
     }
   };
 
+  if (loading) return <div className="text-center mt-10">Loading...</div>;
+
   return (
     <div className="p-6 flex justify-center">
       <Card className="w-full max-w-md">
         <CardContent className="p-6">
-          <h1 className="text-2xl font-bold mb-4">Edit Supply</h1>
+          <h1 className="text-2xl font-bold mb-4">Edit Fish Supply</h1>
           <form onSubmit={handleUpdate} className="space-y-4">
             <div>
               <label className="block text-sm font-medium mb-1">Fisherman</label>
@@ -126,7 +127,7 @@ export default function EditSupply() {
               >
                 Cancel
               </Button>
-              <Button type="submit" className="bg-blue-600 text-white hover:bg-blue-700">
+              <Button type="submit" className="bg-green-600 text-white hover:bg-green-700">
                 Update Supply
               </Button>
             </div>

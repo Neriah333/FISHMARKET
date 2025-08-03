@@ -18,7 +18,7 @@ export default function Login() {
 
     setLoading(true);
     try {
-      // Send email, password, and selected role to backend
+      // Send login request to backend
       const res = await API.post("/auth/login", { email, password, role });
 
       if (!res.data?.token) {
@@ -26,20 +26,25 @@ export default function Login() {
         return;
       }
 
-      // Save real backend token & role
+      // ✅ Normalize and store role
+      const normalizedRole = role.toLowerCase();
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.role);
+      localStorage.setItem("role", normalizedRole);
 
-      // Redirect based on backend role
-      if (res.data.role === "fisherman") {
-        navigate("/dashboard");
-      } else if (res.data.role === "admin") {
-        navigate("/admin");
-      } else if (res.data.role === "agent") {
-        navigate("/dashboard"); // or another page if agent has one
+      // ✅ Store user for dashboard filtering
+      if (res.data.user) {
+        localStorage.setItem("user", JSON.stringify(res.data.user));
       } else {
-        navigate("/unauthorized");
+        // fallback for fisherman if backend didn't send user
+        localStorage.setItem("user", JSON.stringify({ name: "Fisherman" }));
       }
+
+      // ✅ Navigate based on selected role
+      if (normalizedRole === "fisherman") navigate("/dashboard");
+      else if (normalizedRole === "admin") navigate("/admin");
+      else if (normalizedRole === "agent") navigate("/admin");
+      else navigate("/unauthorized");
+
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
     } finally {
@@ -68,7 +73,7 @@ export default function Login() {
           />
 
           <Select onValueChange={(value) => setRole(value)}>
-            <SelectTrigger className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50">
+            <SelectTrigger className="w-full h-10 rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm">
               <SelectValue placeholder="Select Role" />
             </SelectTrigger>
             <SelectContent>

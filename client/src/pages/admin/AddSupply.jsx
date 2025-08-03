@@ -12,10 +12,10 @@ export default function AddSupply() {
   const [fishermen, setFishermen] = useState([]);
   const navigate = useNavigate();
 
-  // Fetch fishermen for dropdown
+  // ✅ Fetch fishermen for dropdown
   useEffect(() => {
     API.get("/fishermen/all")
-      .then((res) => setFishermen(res.data))
+      .then((res) => setFishermen(res.data || []))
       .catch(() => alert("Failed to load fishermen"));
   }, []);
 

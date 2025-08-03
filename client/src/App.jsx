@@ -60,7 +60,7 @@ export default function App() {
         <Route
           path="/dashboard"
           element={
-            <ProtectedRoute roles={["fisherman", "agent", "admin"]}>
+            <ProtectedRoute roles={["fisherman"]}>
               <Dashboard />
             </ProtectedRoute>
           }
