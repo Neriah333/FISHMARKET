@@ -2,17 +2,23 @@ import { Navigate } from "react-router-dom";
 
 export default function ProtectedRoute({ children, roles }) {
   const token = localStorage.getItem("token");
-  const userRole = localStorage.getItem("role")?.toLowerCase(); // normalize
-
-  // Must be logged in
   if (!token) return <Navigate to="/login" replace />;
 
-  // Role check
-  if (roles && !roles.includes(userRole)) {
-    return <Navigate to="/unauthorized" replace />;
-  }
+  try {
+    // Decode JWT payload
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    const userRole = payload.role?.toLowerCase();
 
-  return children;
+    // Role check
+    if (roles && !roles.includes(userRole)) {
+      return <Navigate to="/unauthorized" replace />;
+    }
+
+    return children;
+  } catch (err) {
+    console.error("Invalid token", err);
+    return <Navigate to="/login" replace />;
+  }
 }
 
 

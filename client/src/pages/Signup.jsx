@@ -55,13 +55,12 @@ export default function Signup() {
       // Redirect based on role
       if (role === "fisherman") {
         navigate("/dashboard");
-      } else if (role === "agent") {
-        navigate("/admin-dashboard");
-      } else if (role === "admin") {
-        navigate("/admin-dashboard");
+      } else if (role === "agent" || role === "admin") {
+        navigate("/admin");
       } else {
         navigate("/"); // fallback
       }
+      
     } catch (err) {
       alert(err.response?.data?.message || "Signup failed");
     } finally {
