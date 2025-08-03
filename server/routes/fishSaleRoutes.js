@@ -20,7 +20,7 @@ router.get("/me", protect, getMySales);
 /**
  * Admin/Agent: View all sales
  */
-router.get("/", protect, authorize(["agent", "admin"]), getAllSales);
+router.get("/", protect, authorize(["fisherman", "agent", "admin"]), getAllSales);
 
 /**
  * Admin/Agent: View single sale by ID

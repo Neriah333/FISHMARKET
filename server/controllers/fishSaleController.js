@@ -28,7 +28,7 @@ exports.getAllSales = async (req, res) => {
     const sales = await FishSale.find()
       .populate({
         path: "fishSupply",
-        populate: { path: "fisherman" } // ✅ deep populate
+        populate: { path: "fisherman", select: "names"} // ✅ deep populate
       })
       .sort({ saleDate: -1 });
 
@@ -43,25 +43,24 @@ exports.getAllSales = async (req, res) => {
 // ================= GET MY SALES (Fisherman) =================
 exports.getMySales = async (req, res) => {
   try {
+    // Ensure req.user is available
     const sales = await FishSale.find()
       .populate({
         path: "fishSupply",
-        populate: { path: "fisherman", model: "Fisherman" },
-      })
-      .sort({ saleDate: -1 });
+        populate: { path: "fisherman", select: "name" }
+      });
 
-    // ✅ Filter by current fisherman
-    const mySales = sales.filter(
+    // ✅ Filter by logged-in user
+    const mySales = (sales || []).filter(
       (sale) => sale.fishSupply?.fisherman?._id.toString() === req.user.id
     );
 
     res.json(mySales);
-  } catch (error) {
-    console.error("Error fetching my sales:", error);
-    res.status(500).json({ message: "Internal server error" });
+  } catch (err) {
+    console.error("Error fetching my sales:", err);
+    res.status(500).json({ message: "Failed to fetch my sales" });
   }
 };
-
 // ================= GET SINGLE SALE =================
 exports.getSaleById = async (req, res) => {
   try {

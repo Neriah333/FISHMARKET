@@ -16,7 +16,7 @@ const router = express.Router();
 router.get("/me", protect, getMySupplies);
 
 // Admin/Agent: view all supplies
-router.get("/", protect, authorize(["agent", "admin"]), getAllSupplies);
+router.get("/", protect, authorize(["fisherman", "agent", "admin"]), getAllSupplies);
 
 // Admin/Agent: single supply
 router.get("/:id", protect, authorize(["agent", "admin"]), getSupplyById);

@@ -21,7 +21,7 @@ router.get("/me", protect, getMyTransactions);
 /**
  * Admin/Agent: View all transactions
  */
-router.get("/", protect, authorize(["admin", "agent"]), getAllTransactions);
+router.get("/", protect, authorize(["fisherman", "admin", "agent"]), getAllTransactions);
 
 /**
  * Admin/Agent: View single transaction by ID

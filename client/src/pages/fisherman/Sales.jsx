@@ -4,35 +4,28 @@ import API from "../../services/api";
 export default function Sales() {
   const [sales, setSales] = useState([]);
   const [loading, setLoading] = useState(true);
+  const user = JSON.parse(localStorage.getItem("user"));
+
 
   useEffect(() => {
     const fetchSales = async () => {
-      const user = JSON.parse(localStorage.getItem("user"));
-      const token = localStorage.getItem("token");
-
-      if (!user || !token) {
-        console.error("No user or token in localStorage");
-        setLoading(false);
-        return;
-      }
-
-      // ✅ Use endpoint based on role
-      let endpoint = "/sales";
-      if (user.role === "fisherman") endpoint = "/sales/me";
-
       try {
-        const res = await API.get(endpoint); // Axios instance already adds Bearer token
-        setSales(res.data);
+        const role = localStorage.getItem("role");
+        const endpoint = role === "fisherman" ? "/sales/me" : "/sales";
+
+        const res = await API.get(endpoint);
+        setSales(res.data || []);
       } catch (err) {
-        console.error("Failed to fetch sales:", err.response?.data || err.message);
+        alert("Failed to load transactions");
       } finally {
         setLoading(false);
       }
     };
-
     fetchSales();
-  }, []);
+  }, [user?.role]);
 
+
+    
   if (loading) return <p>Loading sales...</p>;
 
   return (

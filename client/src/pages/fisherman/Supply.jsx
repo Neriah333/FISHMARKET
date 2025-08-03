@@ -4,25 +4,24 @@ import API from "../../services/api";
 export default function SupplyList() {
   const [supplies, setSupplies] = useState([]);
   const [loading, setLoading] = useState(true);
+  const user = JSON.parse(localStorage.getItem("user"));
 
   useEffect(() => {
     const fetchSupplies = async () => {
       try {
-        const res = await API.get("/supplies/me"); // ✅ Fisherman-only endpoint
-        setSupplies(res.data);
+        const role = localStorage.getItem("role");
+        const endpoint = role === "fisherman" ? "/supplies/me" : "/supplies";
+
+        const res = await API.get(endpoint);
+        setSupplies(res.data || []);
       } catch (err) {
-        if (err.response?.status === 403) {
-          alert("You are not allowed to view supplies.");
-        } else {
-          alert("Failed to load supplies.");
-        }
+        alert("Failed to load transactions");
       } finally {
         setLoading(false);
       }
     };
-
     fetchSupplies();
-  }, []);
+  }, [user?.role]);
 
   if (loading) {
     return (

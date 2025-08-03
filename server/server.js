@@ -8,11 +8,16 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
+app.use(express.json());
+
 // Middleware
 app.use(cors());
 
+app.use((req, res, next) => {
+  console.log("🔹 Incoming headers:", req.headers);
+  next();
+});
 
-app.use(express.json());
 
 // Routes
 app.use("/api/auth", require("./routes/authRoutes"));
