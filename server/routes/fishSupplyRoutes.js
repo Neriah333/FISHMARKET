@@ -16,13 +16,13 @@ const router = express.Router();
 router.get("/me", protect, getMySupplies);
 
 // Admin/Accountant: view all supplies
-router.get("/", protect, authorize(["accountant", "admin"]), getAllSupplies);
+router.get("/", protect, authorize(["agent", "admin"]), getAllSupplies);
 
 // Admin/Accountant: create, update, delete
 router.post("/", protect, authorize(["agent", "admin"]), createSupply);
 router.put("/:id", protect, authorize(["agent", "admin"]), updateSupply);
 router.delete("/:id", protect, authorize(["agent", "admin"]), deleteSupply);
-router.get("/:id", protect, authorize(["agent", "admin", "accountant"]), getSupplyById);
+router.get("/:id", protect, authorize(["agent", "admin"]), getSupplyById);
 
 module.exports = router;
 

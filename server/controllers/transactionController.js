@@ -1,6 +1,7 @@
 // controllers/transactionController.js
 const Transaction = require("../models/Transaction");
 
+// Create Transaction
 exports.createTransaction = async (req, res) => {
   try {
     const { fisherman, fishSale, transactionDate, paymentAmount } = req.body;
@@ -19,6 +20,7 @@ exports.createTransaction = async (req, res) => {
   }
 };
 
+// Get All Transactions (Admin/Agent)
 exports.getAllTransactions = async (req, res) => {
   try {
     const transactions = await Transaction.find()
@@ -36,6 +38,44 @@ exports.getAllTransactions = async (req, res) => {
   }
 };
 
+// ✅ Get a single transaction by ID
+exports.getTransactionById = async (req, res) => {
+  try {
+    const transaction = await Transaction.findById(req.params.id)
+      .populate("fisherman")
+      .populate({
+        path: "fishSale",
+        populate: { path: "fishSupply", populate: { path: "fisherman" } },
+      });
+
+    if (!transaction) return res.status(404).json({ message: "Transaction not found" });
+
+    res.json(transaction);
+  } catch (error) {
+    console.error("Error fetching transaction:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// ✅ Get current fisherman's transactions
+exports.getMyTransactions = async (req, res) => {
+  try {
+    const transactions = await Transaction.find({ fisherman: req.user.id })
+      .populate("fisherman")
+      .populate({
+        path: "fishSale",
+        populate: { path: "fishSupply", populate: { path: "fisherman" } },
+      })
+      .sort({ transactionDate: -1 });
+
+    res.json(transactions);
+  } catch (error) {
+    console.error("Error fetching my transactions:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// Update Transaction
 exports.updateTransaction = async (req, res) => {
   try {
     const transaction = await Transaction.findByIdAndUpdate(req.params.id, req.body, {
@@ -55,6 +95,7 @@ exports.updateTransaction = async (req, res) => {
   }
 };
 
+// Delete Transaction
 exports.deleteTransaction = async (req, res) => {
   try {
     const transaction = await Transaction.findByIdAndDelete(req.params.id);

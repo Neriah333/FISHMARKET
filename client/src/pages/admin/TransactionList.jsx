@@ -70,7 +70,7 @@ export default function TransactionList() {
                   to={`/admin/transactions/update/${tx._id}`}
                   className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
                 >
-                  Edit
+                  Update
                 </Link>
                 <button
                   onClick={() => handleDelete(tx._id)}
