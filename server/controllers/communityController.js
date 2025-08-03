@@ -94,3 +94,32 @@ exports.deleteComment = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// ===== Like / Unlike Post =====
+
+exports.toggleLikePost = async (req, res) => {
+  try {
+    const post = await CommunityPost.findById(req.params.id);
+    if (!post) return res.status(404).json({ message: "Post not found" });
+
+    const userId = req.user.id;
+    const hasLiked = post.likes.includes(userId);
+
+    if (hasLiked) {
+      post.likes.pull(userId); // Unlike
+    } else {
+      post.likes.push(userId); // Like
+    }
+
+    await post.save();
+
+    const updatedPost = await CommunityPost.findById(post._id)
+      .populate("fisherman", "name")
+      .populate("comments.fisherman", "name");
+
+    res.json(updatedPost);
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

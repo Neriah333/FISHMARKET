@@ -10,8 +10,10 @@ const CommunityPostSchema = new mongoose.Schema({
   fisherman: { type: mongoose.Schema.Types.ObjectId, ref: "Fisherman", required: true },
   title: { type: String, required: true },
   content: { type: String, required: true },
-  comments: [CommentSchema], // Embedded array of comments
+  comments: [CommentSchema],
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Fisherman" }], // ✅ Add this
   createdAt: { type: Date, default: Date.now },
 });
+
 
 module.exports = mongoose.model("CommunityPost", CommunityPostSchema);
