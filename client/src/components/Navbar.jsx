@@ -26,11 +26,11 @@ export default function Layout() {
     <div className="flex justify-between items-center px-8 py-4 border-b">
       {/* Nav Links */}
       <NavigationMenu>
-        <NavigationMenuList className="flex gap-10">
+        <NavigationMenuList className="flex gap-20">
           <NavigationMenuItem>
             <Link
               to="/login"
-              className="text-2xl font-bold text-blue hover:text-blue-600"
+              className="text-4xl font-bold text-blue hover:text-blue-600"
             >
               Home
             </Link>
@@ -38,7 +38,7 @@ export default function Layout() {
           <NavigationMenuItem>
             <Link
               to="/about"
-              className="text-2xl font-bold text-blue hover:text-blue-600"
+              className="text-4xl font-bold text-blue hover:text-blue-600"
             >
               About
             </Link>
@@ -46,7 +46,7 @@ export default function Layout() {
           <NavigationMenuItem>
             <Link
               to="/contact"
-              className="text-2xl font-bold text-blue hover:text-blue-600"
+              className="text-4xl font-bold text-blue hover:text-blue-600"
             >
               Contact
             </Link>

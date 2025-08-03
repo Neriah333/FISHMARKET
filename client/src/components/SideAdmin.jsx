@@ -12,6 +12,7 @@ export default function Side() {
     { to: "/admin/supply", label: "Supply", icon: <Truck className="mr-2 h-5 w-5" /> },
     { to: "/admin/sales", label: "Sales", icon: <ShoppingCart className="mr-2 h-5 w-5" /> },
     { to: "/admin/transactions", label: "Transactions", icon: <Receipt className="mr-2 h-5 w-5" /> },
+    { to: "/community", label: "Community" },
   ];
 
   return (
