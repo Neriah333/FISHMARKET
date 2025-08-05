@@ -7,21 +7,34 @@ export default function SupplyList() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchSupplies();
-  }, []);
+  // useEffect(() => {
+  //   fetchSupplies();
+  // }, []);
 
-  const fetchSupplies = async () => {
+  // const fetchSupplies = async () => {
+  //   try {
+  //     const res = await API.get("/supplies");
+  //     setSupplies(res.data || []);
+  //   } catch (err) {
+  //     console.error("Error fetching supplies:", err.response || err.message);
+  //     alert("Failed to load supplies");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+  useEffect(() => {
+  const fetchMySupplies = async () => {
     try {
-      const res = await API.get("/supplies");
-      setSupplies(res.data || []);
-    } catch (err) {
-      console.error("Error fetching supplies:", err.response || err.message);
-      alert("Failed to load supplies");
-    } finally {
-      setLoading(false);
+      const { data } = await API.get("/fishermen/me/supplies");
+      setSupplies(data); // Only that fisherman's data
+    } catch (error) {
+      console.error("Error fetching my supplies:", error);
     }
   };
+
+  fetchMySupplies();
+}, []);
+
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this supply?")) return;

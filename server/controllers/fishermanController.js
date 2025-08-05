@@ -3,11 +3,16 @@ const Fisherman = require("../models/Fisherman");
 // ========== CREATE FISHERMAN (Admin Only) ==========
 exports.createFisherman = async (req, res) => {
   try {
-    const fisherman = await Fisherman.create(req.body);
+    const fishermanData = {
+      ...req.body,
+      user: req.user.id // assuming you have auth middleware attaching req.user
+    };
+
+    const fisherman = await Fisherman.create(fishermanData);
     res.status(201).json(fisherman);
-  } catch (error) {
-    console.error("Error creating fisherman:", error);
-    res.status(500).json({ message: "Internal server error" });
+  } catch (err) {
+    console.error("Error creating fisherman:", err);
+    res.status(400).json({ error: err.message });
   }
 };
 

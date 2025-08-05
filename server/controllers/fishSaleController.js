@@ -28,7 +28,7 @@ exports.getAllSales = async (req, res) => {
     const sales = await FishSale.find()
       .populate({
         path: "fishSupply",
-        populate: { path: "fisherman", select: "names"} // ✅ deep populate
+        populate: { path: "fisherman", select: "name"} // ✅ deep populate
       })
       .sort({ saleDate: -1 });
 

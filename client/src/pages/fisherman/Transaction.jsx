@@ -40,7 +40,6 @@ export default function TransactionList() {
         <table className="min-w-full bg-white border border-gray-200">
           <thead>
             <tr className="bg-gray-100">
-              <th className="px-4 py-2 border">Fisherman</th>
               <th className="px-4 py-2 border">Sale Amount (Ksh)</th>
               <th className="px-4 py-2 border">Payment Amount (Ksh)</th>
               <th className="px-4 py-2 border">Transaction Date</th>
@@ -49,9 +48,7 @@ export default function TransactionList() {
           <tbody>
             {transactions.map((t) => (
               <tr key={t._id} className="text-center">
-                <td className="px-4 py-2 border">
-                  {t.fisherman?.name || "Unknown"}
-                </td>
+                
                 <td className="px-4 py-2 border">
                   {t.fishSale?.saleAmount || 0}
                 </td>

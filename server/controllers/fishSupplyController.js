@@ -36,7 +36,14 @@ exports.getAllSupplies = async (req, res) => {
 // ================= GET MY SUPPLIES (Fisherman) =================
 exports.getMySupplies = async (req, res) => {
   try {
-    const supplies = await FishSupply.find({ fisherman: req.user.id })
+    // Step 1: Find the fisherman for this logged-in user
+    const fisherman = await Fisherman.findOne({ user: req.user.id });
+    if (!fisherman) {
+      return res.status(404).json({ message: "Fisherman profile not found" });
+    }
+
+    // Step 2: Fetch supplies belonging to this fisherman
+    const supplies = await FishSupply.find({ fisherman: fisherman._id })
       .populate("fisherman")
       .sort({ catchDate: -1 });
 
@@ -46,6 +53,7 @@ exports.getMySupplies = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 exports.getSupplyById = async (req, res) => {
   try {
