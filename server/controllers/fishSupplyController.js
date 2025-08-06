@@ -1,4 +1,6 @@
 const FishSupply = require("../models/FishSupply");
+const Fisherman = require("../models/Fisherman");
+
 
 // ================= CREATE SUPPLY (Admin/Accountant) =================
 exports.createSupply = async (req, res) => {

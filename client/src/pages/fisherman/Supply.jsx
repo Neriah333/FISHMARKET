@@ -23,6 +23,19 @@ export default function SupplyList() {
     fetchSupplies();
   }, [user?.role]);
 
+  //   useEffect(() => {
+//   const fetchMySupplies = async () => {
+//     try {
+//       const { data } = await API.get("/fishermen/me/supplies");
+//       setSupplies(data); // Only that fisherman's data
+//     } catch (error) {
+//       console.error("Error fetching my supplies:", error);
+//     }
+//   };
+
+//   fetchMySupplies();
+// }, []);
+
   if (loading) {
     return (
       <div className="p-6 text-center text-gray-500">Loading supplies...</div>
